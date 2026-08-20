@@ -59,7 +59,7 @@ EXCLUDED_SKILLS      = { "<PREFIX>create-skill", "<PREFIX>skills-validation",
                          "<PREFIX>agent-skills-spec", "<PREFIX>create-agent",
                          "<PREFIX>create-prompt", "<PREFIX>agents-validation",
                          "<PREFIX>prompts-validation" }
-MANAGED_PREFIXES     = ( "<PREFIX>", )           # e.g. ("tds-",)
+MANAGED_PREFIXES     = ( "<PREFIX>", )           # e.g. ("dh-",)
 LEGACY_PREFIXES      = ( "<OLD_PREFIX>", )       # prior names `clean` should also treat as orphans
 SKILL_ALIASES        = { }                       # old-name -> canonical-name (emits deprecation warning)
 ROUTE_SCORE_THRESHOLD = 0.95

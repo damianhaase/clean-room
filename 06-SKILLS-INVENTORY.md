@@ -3,7 +3,7 @@
 34 skills. This file records each skill's **behavioral contract** — purpose, inputs, outputs,
 guardrails, owned resources, and any script entry point — so you can **re-author** its `SKILL.md`
 body from scratch (do not copy the original prose). Descriptions here are paraphrased contracts,
-not the originals. All names use `<PREFIX>` (original `tds-`). Every skill ships an
+not the originals. All names use `<PREFIX>` (original `dh-`). Every skill ships an
 `eval_queries.json` (positive/negative counts noted where they differ from ~10/10).
 
 Legend: **B** = base (always installed), **X** = excluded/dev-only (hidden unless `--dev`),

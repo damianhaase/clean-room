@@ -1,17 +1,15 @@
-# Clean-Room Specification — `tds-skills` (platform-agnostic)
+# Clean-Room Specification — `dh-skills` (platform-agnostic)
 
 This folder is a **complete, implementation-language-neutral specification** of every piece of
 core functionality in the original repository. It exists so a second team can **re-implement the
 same behavior from scratch — in Python, TypeScript, Go, or anything else — without copying the
 original's protected expression** (its prose, calibration tables, or banking-specific content).
 
-It supersedes the single-file `../CLEAN_ROOM_RECIPE.md` (kept only as a launcher).
-
 ---
 
 ## What the product *is*, in one paragraph
 
-`tds-skills` is a **two-layer developer-productivity system**. Layer 1 is a tiny **package
+`dh-skills` is a **two-layer developer-productivity system**. Layer 1 is a tiny **package
 manager CLI** that downloads a library of markdown "content" from a git host and copies it into
 the well-known folders that AI coding assistants (VS Code Copilot Chat, IntelliJ Copilot, Claude,
 etc.) read. Layer 2 is that **content library**: ~34 *skills* (deterministic single-task
@@ -59,7 +57,7 @@ interfaces**, never protected expression. Use this split:
 | **File formats & protocols** (SKILL.md, `.agent.md`, `.prompt.md`, handoff schema *shape*) | ✅ Use directly | Public specifications; formats aren't copyrightable. Sources cited in file 05. |
 | **The engine** (CLI behavior, router algorithm, validator) | ✅ Re-implement from this spec | Behavior/interface documented here; write fresh code. Router is standard IR. |
 | **Skill/agent/prompt *content*** (the actual banking prose, calibration wording) | ⚠️ Re-author from scratch | This is the proprietary IP. Re-derive from the public sources in file 05 + your own domain. |
-| **Org specifics** (Jira/Confluence URLs, ticket-key regex, GitHub org, `tds-`/`LEN-` names) | ❌ Replace | Organization-specific. Substitute your own endpoints, prefixes, and branch names. |
+| **Org specifics** (Jira/Confluence URLs, ticket-key regex, GitHub org, `dh-`/`LEN-` names) | ❌ Replace | Organization-specific. Substitute your own endpoints, prefixes, and branch names. |
 
 **Recommended two-person protocol.** Person A reads the original and maintains *this spec*
 (interfaces + behavior only). Person B implements the engine and authors the content **from this
@@ -74,8 +72,8 @@ Throughout this spec, treat these as **configuration**, not literals:
 
 | Placeholder | Original value | Your value |
 |---|---|---|
-| `<CLI_NAME>` | `tds-skills` | e.g. `acme-skills` |
-| `<PREFIX>` | `tds-` | e.g. `acme-` |
+| `<CLI_NAME>` | `dh-skills` | e.g. `acme-skills` |
+| `<PREFIX>` | `dh-` | e.g. `acme-` |
 | `<TICKET_RE>` | `LEN-\d+` | your tracker's key pattern |
 | `<REPO_URL>` | `github.com/TD-Universe/CorpBankTech_skills` | your content repo |
 | `<JIRA_BASE>` / `<CONF_BASE>` | `track.td.com` / `collaborate.td.com` | your endpoints |

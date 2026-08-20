@@ -1,7 +1,7 @@
 # 10 — User Workflows (how users use it, end-to-end)
 
 This file reconstructs **what the system does for users and how they use it**. Commands use
-`<CLI>` (original `tds-skills`) and `<PREFIX>` (original `tds-`). Behaviors tagged `CR-UX-NNN`.
+`<CLI>` (original `dh-skills`) and `<PREFIX>` (original `dh-`). Behaviors tagged `CR-UX-NNN`.
 
 ---
 

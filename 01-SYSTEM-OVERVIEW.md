@@ -92,7 +92,7 @@ Every skill and agent ships a paired `eval_queries.json` (positive + negative ro
 |---|---|
 | **Base skills** | The small always-installed, never-removed-while-needed set (shell-env detection, saving-reports, jira-access, confluence-page-access). |
 | **Excluded / dev skills** | Meta/authoring skills hidden from normal `list`/`install`, shown only with `--dev`. |
-| **Managed prefix** | The `<PREFIX>` (e.g. `tds-`) that marks artifacts this tool owns; used by `clean` to find orphans. |
+| **Managed prefix** | The `<PREFIX>` (e.g. `dh-`) that marks artifacts this tool owns; used by `clean` to find orphans. |
 | **Deploy-state cache** | JSON file in the skills target recording the last deployed `{ref, commit, deployed_at}`. |
 | **Router** | The deterministic text classifier mapping a query to exactly one agent. |
 | **Handoff payload** | The typed record each SDLC phase emits to the coordinator; validated against one JSON Schema. |
