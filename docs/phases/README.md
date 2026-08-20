@@ -10,7 +10,7 @@ One file per phase: `PHASE-NNN-<slug>.md`, copied from `../PHASE_TEMPLATE.md`.
 | PHASE-004 | Download (shallow clone) + dir hash-diff | done |
 | PHASE-005 | Deploy-state cache + `install` (no preserve logic) | done |
 | PHASE-006 | Preserve-user-edits logic (agents/prompts) | done |
-| PHASE-007 | `update`, `update --check`, `uninstall`, `clean` | not-started |
+| PHASE-007 | `update`, `update --check`, `uninstall`, `clean` | done |
 | PHASE-008 | Router: tokenizer + stemmer | not-started |
 | PHASE-009 | Router: IDF-cosine scoring + calibration tables | not-started |
 | PHASE-010 | Eval runner + `eval` / `route-score` commands | not-started |
