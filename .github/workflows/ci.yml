@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+# No network access should be required by the test suite itself. This workflow does not
+# grant any secrets/tokens to test jobs — tests must stub git/network calls (AGENTS.md rule 5).
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package (dev extras only)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run test suite
+        run: pytest -q --maxfail=1
+
+      - name: Check phase budget on this diff
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -v -E '^(docs/|content/.*\.json$)' | wc -l)
+          LINES=$(git diff --shortstat origin/${{ github.base_ref }}...HEAD -- . ':!docs' | grep -oE '[0-9]+ insertion|[0-9]+ deletion' | grep -oE '[0-9]+' | paste -sd+ | bc || echo 0)
+          echo "Files changed (excl. docs): $FILES"
+          echo "Lines changed (excl. docs): $LINES"
+          if [ "$FILES" -gt 8 ]; then
+            echo "::warning::This PR touches more than 8 files — confirm it's a single PHASE-NNN and not several combined."
+          fi
+          if [ "$LINES" -gt 400 ]; then
+            echo "::warning::This PR changes more than 400 lines — confirm it's a single PHASE-NNN and not several combined."
+          fi
+
+  # These jobs are no-ops (skip) until their phases land; keep them defined now so the moment
+  # phase 010/013/skills-validation exist, flipping `if:` to true turns on a real gate.
+  route-score:
+    runs-on: ubuntu-latest
+    if: false  # flip on after PHASE-010 (router + eval runner) lands
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - run: python -m dh-skills.cli route-score
+
+  eval:
+    runs-on: ubuntu-latest
+    if: false  # flip on after PHASE-010 lands
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - run: python -m dh-skills.cli eval
+
+  validate-handoff-fixtures:
+    runs-on: ubuntu-latest
+    if: false  # flip on after PHASE-013 lands
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - run: |
+          for f in tests/fixtures/handoff_payloads/valid/*.json; do
+            python -m dh-skills.cli validate-handoff "$f"
+          done
