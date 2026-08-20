@@ -7,6 +7,7 @@ from pathlib import Path
 
 from . import __version__
 from .catalog import list_content, status_content
+from .installer import install_content
 from .paths import Targets
 
 CLI_NAME = "dh-skills"
@@ -27,20 +28,36 @@ def main(
 
     parser = argparse.ArgumentParser(prog=CLI_NAME)
     subparsers = parser.add_subparsers(dest="command")
-    for command in ("list", "status"):
+    for command in ("list", "status", "install"):
         command_parser = subparsers.add_parser(command)
         command_parser.add_argument("--dev", action="store_true")
         if command == "list":
             command_parser.add_argument("--skills", action="store_true")
             command_parser.add_argument("--agents", action="store_true")
             command_parser.add_argument("--prompts", action="store_true")
+        if command == "install":
+            command_parser.add_argument("names", nargs="*")
+            command_parser.add_argument("--force", action="store_true")
+            command_parser.add_argument("--dry-run", action="store_true")
+            command_parser.add_argument("--ref", default="main")
     options = parser.parse_args(arguments)
-    if options.command not in {"list", "status"}:
+    if options.command not in {"list", "status", "install"}:
         print(f"{CLI_NAME}: no command specified", file=sys.stderr)
         return 2
 
     source = Path("content") if content_dir is None else Path(content_dir)
     resolved_targets = Targets(Path(), Path(), Path()) if targets is None else targets
+    if options.command == "install":
+        result = install_content(
+            source,
+            resolved_targets,
+            names=options.names,
+            force=options.force,
+            dev=options.dev,
+            dry_run=options.dry_run,
+            ref=options.ref,
+        )
+        return result.exit_code
     if options.command == "list":
         show_any = options.skills or options.agents or options.prompts
         list_content(
