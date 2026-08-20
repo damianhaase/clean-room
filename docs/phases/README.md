@@ -7,7 +7,7 @@ One file per phase: `PHASE-NNN-<slug>.md`, copied from `../PHASE_TEMPLATE.md`.
 | PHASE-001 | CLI scaffold + `--version` | done |
 | PHASE-002 | Path resolution (per-OS targets) | done |
 | PHASE-003 | `list` / `status` against fixture content dir | done |
-| PHASE-004 | Download (shallow clone) + dir hash-diff | not-started |
+| PHASE-004 | Download (shallow clone) + dir hash-diff | done |
 | PHASE-005 | Deploy-state cache + `install` (no preserve logic) | not-started |
 | PHASE-006 | Preserve-user-edits logic (agents/prompts) | not-started |
 | PHASE-007 | `update`, `update --check`, `uninstall`, `clean` | not-started |
