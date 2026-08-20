@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "REPLACE_ME_CLI_NAME"
+name = "dh-skills"
 version = "0.0.1"
 description = "Package-manager CLI + engine (clean-room re-implementation)"
 requires-python = ">=3.11"
@@ -18,7 +18,7 @@ generate = ["sentence-transformers", "sqlite-vec"]
 dev = ["pytest>=8", "pytest-mock>=3"]
 
 [project.scripts]
-REPLACE_ME_CLI_NAME = "REPLACE_ME_PKG.cli:main"
+dh-skills = "dh_skills.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

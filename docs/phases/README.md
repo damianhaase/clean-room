@@ -4,7 +4,7 @@ One file per phase: `PHASE-NNN-<slug>.md`, copied from `../PHASE_TEMPLATE.md`.
 
 | Phase | Title | Status |
 |---|---|---|
-| PHASE-001 | CLI scaffold + `--version` | not-started |
+| PHASE-001 | CLI scaffold + `--version` | done |
 | PHASE-002 | Path resolution (per-OS targets) | not-started |
 | PHASE-003 | `list` / `status` against fixture content dir | not-started |
 | PHASE-004 | Download (shallow clone) + dir hash-diff | not-started |
