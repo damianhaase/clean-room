@@ -20,6 +20,7 @@ class InstallResult:
     overwritten: int = 0
     unchanged: int = 0
     skipped: int = 0
+    preserved: int = 0
     dry_run: bool = False
 
 
@@ -46,11 +47,25 @@ def _copy_skill(source: Path, destination: Path, result: InstallResult, *, force
     shutil.copytree(source, destination)
 
 
-def _copy_artifact(source: Path, destination: Path, result: InstallResult, *, dry_run: bool) -> None:
+def _copy_artifact(
+    source: Path,
+    destination: Path,
+    result: InstallResult,
+    *,
+    force: bool,
+    dry_run: bool,
+) -> None:
     if destination.exists():
-        result.skipped += 1
-        return
-    result.installed += 1
+        if source.read_bytes() == destination.read_bytes():
+            result.unchanged += 1
+            return
+        if not force:
+            result.preserved += 1
+            print(f"dh-skills: preserve {destination}", file=__import__("sys").stderr)
+            return
+        result.overwritten += 1
+    else:
+        result.installed += 1
     if not dry_run:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
@@ -105,9 +120,9 @@ def install_content(
 
     if requested_all:
         for source in catalog.agents:
-            _copy_artifact(source, targets.agents / source.name, result, dry_run=dry_run)
+            _copy_artifact(source, targets.agents / source.name, result, force=force, dry_run=dry_run)
         for source in catalog.prompts:
-            _copy_artifact(source, targets.prompts / source.name, result, dry_run=dry_run)
+            _copy_artifact(source, targets.prompts / source.name, result, force=force, dry_run=dry_run)
 
     if not dry_run and result.exit_code == 0:
         _write_state(targets.skills, ref, commit)
