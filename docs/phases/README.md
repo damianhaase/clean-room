@@ -8,7 +8,7 @@ One file per phase: `PHASE-NNN-<slug>.md`, copied from `../PHASE_TEMPLATE.md`.
 | PHASE-002 | Path resolution (per-OS targets) | done |
 | PHASE-003 | `list` / `status` against fixture content dir | done |
 | PHASE-004 | Download (shallow clone) + dir hash-diff | done |
-| PHASE-005 | Deploy-state cache + `install` (no preserve logic) | not-started |
+| PHASE-005 | Deploy-state cache + `install` (no preserve logic) | done |
 | PHASE-006 | Preserve-user-edits logic (agents/prompts) | not-started |
 | PHASE-007 | `update`, `update --check`, `uninstall`, `clean` | not-started |
 | PHASE-008 | Router: tokenizer + stemmer | not-started |
