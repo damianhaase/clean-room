@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dh-skills"
+version = "0.0.1"
+description = "Package-manager CLI + engine (clean-room re-implementation)"
+requires-python = ">=3.11"
+dependencies = []   # CR-CLI-001: runtime deps MUST stay empty — stdlib only
+
+[project.optional-dependencies]
+# Only needed at handoff-schema *authoring* time if you want full JSON-Schema mode (file 04 §5).
+# The stdlib fallback validator must still be implemented and tested independently (PHASE-012).
+schema = ["jsonschema>=4"]
+# Only needed for the KB engine's vector tier (file 12) — deferred, not part of early phases.
+generate = ["sentence-transformers", "sqlite-vec"]
+dev = ["pytest>=8", "pytest-mock>=3"]
+
+[project.scripts]
+dh-skills = "dh_skills.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.setuptools.packages.find]
+where = ["src"]
