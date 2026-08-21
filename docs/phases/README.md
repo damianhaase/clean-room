@@ -19,6 +19,17 @@ One file per phase: `PHASE-NNN-<slug>.md`, copied from `../PHASE_TEMPLATE.md`.
 | PHASE-013 | `validate-handoff` CLI + YAML/JSON loader | not-started |
 | PHASE-014 | Build hook + base-skill bundling | not-started |
 
+## Note on route-score / eval CI gates
+
+PHASE-010 implements `eval` and `route-score` correctly (auto-discovery of
+`content/agents/*.agent.md` paired with `*.eval_queries.json`, per CR-CLI-007/018/019).
+Their CI jobs in `.github/workflows/ci.yml` stay disabled (`if: false`) until one of:
+- Milestone 4 content authoring begins and `content/agents/` has real agents, or
+- a committed fixture agents dir (e.g. `tests/fixtures/agents/`) is added and the
+  workflow is pointed at it via `--agents-dir` for an earlier, CI-only signal.
+Do not flip these jobs to `if: true` without one of the above in place — see PHASE-010's
+notes for what happened when this was done prematurely.
+
 Update this table's Status column as part of closing out each phase (AGENTS.md gate checklist).
 Do not add rows for phases beyond content authoring until Milestone 4 is reached — see
 `../specs/00-REVERSE-ENGINEERING-PLAN.md` §5.

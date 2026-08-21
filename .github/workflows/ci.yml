@@ -49,7 +49,7 @@ jobs:
   # phase 010/013/skills-validation exist, flipping `if:` to true turns on a real gate.
   route-score:
     runs-on: ubuntu-latest
-    if: false  # flip on after PHASE-010 (router + eval runner) lands
+    if: false  # code-ready since PHASE-010; still needs content/agents/ (Milestone 4) or a committed test-fixture agents dir before this can turn on — see docs/phases/README.md
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -59,7 +59,7 @@ jobs:
 
   eval:
     runs-on: ubuntu-latest
-    if: false  # flip on after PHASE-010 lands
+    if: false  # code-ready since PHASE-010; still needs content/agents/ (Milestone 4) or a committed test-fixture agents dir before this can turn on — see docs/phases/README.md
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

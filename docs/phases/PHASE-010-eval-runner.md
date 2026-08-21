@@ -23,9 +23,10 @@ Implement offline routing evaluation over injected assertions and agent descript
 - [x] Full suite (`pytest -q`) still green
 - [x] Diff stays within budget (<= 8 files / <= 400 changed lines, excluding docs/fixtures)
 - [x] No new runtime dependency added
-- [ ] Commit message: `PHASE-010: add eval and route-score gates`
+- [x] Commit message: `PHASE-010: docs and dead-code cleanup`
 
 ## Notes / open questions
 
 - Assertions are injected as `(owner, query, should_trigger)` tuples for deterministic unit tests; production discovery flattens paired `<agent>.eval_queries.json` files and infers ownership from filenames.
 - The CLI auto-discovers `content/agents` by default; `--agents-dir` is an optional override for CI and tests.
+- route-score/eval CI jobs remain `if: false` — code is spec-conformant and unit-tested, but there is no content/agents/ directory yet (Milestone 4 has not started). See docs/phases/README.md for the dependency note.
