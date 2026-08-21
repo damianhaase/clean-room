@@ -29,6 +29,10 @@ file before writing any code.
    proprietary content to re-author from scratch — never copy from an external original, never
    invent plausible-sounding numbers to make a test pass. If a test is failing, fix the code or the
    calibration table, never edit `eval_queries.json` to force a result.
+8. **Data dependencies must exist before enabling CI.** A CI job's code being implemented is not
+   sufficient reason to enable it — confirm any data/content dependency it needs (e.g.
+   `content/agents/` for route-score/eval) actually exists first. Check
+   `docs/phases/README.md`'s CI-gates note before flipping any `if: false` job to enabled.
 
 ## Where things live
 

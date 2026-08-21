@@ -21,17 +21,6 @@ class Evaluation:
         return self.matched / self.total if self.total else 0.0
 
 
-def load_assertions(path: Path) -> list[Assertion]:
-    """Load `{agent, query, should_trigger}` assertions from JSON."""
-    payload = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(payload, list):
-        raise ValueError("eval file must contain a list")
-    return [
-        (str(item["agent"]), str(item["query"]), bool(item["should_trigger"]))
-        for item in payload
-    ]
-
-
 def load_agent_assertions(agents_dir: Path) -> list[Assertion]:
     """Discover paired per-agent eval files and infer owners from filenames."""
     directory = Path(agents_dir)
