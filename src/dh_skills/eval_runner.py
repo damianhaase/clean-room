@@ -32,6 +32,27 @@ def load_assertions(path: Path) -> list[Assertion]:
     ]
 
 
+def load_agent_assertions(agents_dir: Path) -> list[Assertion]:
+    """Discover paired per-agent eval files and infer owners from filenames."""
+    directory = Path(agents_dir)
+    if not directory.is_dir():
+        raise FileNotFoundError(directory)
+    assertions: list[Assertion] = []
+    for agent_path in sorted(directory.glob("*.agent.md")):
+        owner = agent_path.name.removesuffix(".agent.md")
+        eval_path = agent_path.with_name(f"{owner}.eval_queries.json")
+        if not eval_path.is_file():
+            continue
+        payload = json.loads(eval_path.read_text(encoding="utf-8"))
+        if not isinstance(payload, list):
+            raise ValueError(f"eval file must contain a list: {eval_path}")
+        assertions.extend(
+            (owner, str(item["query"]), bool(item["should_trigger"]))
+            for item in payload
+        )
+    return assertions
+
+
 def load_agent_documents(agents_dir: Path) -> dict[str, str]:
     """Load simple agent bodies keyed by their markdown stem."""
     directory = Path(agents_dir)

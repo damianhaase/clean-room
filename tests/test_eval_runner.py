@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from dh_skills.cli import main
-from dh_skills.eval_runner import ROUTE_SCORE_THRESHOLD, evaluate, route_score
+from dh_skills.eval_runner import ROUTE_SCORE_THRESHOLD, evaluate, load_agent_assertions, route_score
 
 
 def profiles():
@@ -51,30 +51,47 @@ def test_route_score_threshold_includes_exact_boundary():
 
 
 def test_cli_eval_and_route_score_use_json_fixture(tmp_path, capsys):
-    agents_dir = tmp_path / "agents"
-    agents_dir.mkdir()
+    content_dir = tmp_path / "content"
+    agents_dir = content_dir / "agents"
+    agents_dir.mkdir(parents=True)
     (agents_dir / "dh-design.agent.md").write_text("design APIs", encoding="utf-8")
     (agents_dir / "dh-test.agent.md").write_text("test coverage", encoding="utf-8")
-    eval_file = tmp_path / "eval.json"
-    eval_file.write_text(json.dumps([
-        {"agent": "dh-design", "query": "design API", "should_trigger": True},
-        {"agent": "dh-test", "query": "test coverage", "should_trigger": True},
+    (agents_dir / "dh-design.eval_queries.json").write_text(json.dumps([
+        {"query": "design API", "should_trigger": True},
+    ]), encoding="utf-8")
+    (agents_dir / "dh-test.eval_queries.json").write_text(json.dumps([
+        {"query": "test coverage", "should_trigger": True},
     ]), encoding="utf-8")
 
-    assert main(["eval", "--agents-dir", str(agents_dir), "--eval-file", str(eval_file)]) == 0
+    assert main(["eval"], content_dir=content_dir) == 0
     assert "overall accuracy 1.000" in capsys.readouterr().out
-    assert main(["route-score", "--agents-dir", str(agents_dir), "--eval-file", str(eval_file)]) == 0
+    assert main(["route-score"], content_dir=content_dir) == 0
     assert "routing accuracy 1.000" in capsys.readouterr().out
 
 
 def test_cli_route_score_fails_below_threshold_and_missing_agents_is_usage_error(tmp_path):
-    agents_dir = tmp_path / "agents"
-    agents_dir.mkdir()
+    content_dir = tmp_path / "content"
+    agents_dir = content_dir / "agents"
+    agents_dir.mkdir(parents=True)
     (agents_dir / "dh-design.agent.md").write_text("design APIs", encoding="utf-8")
-    eval_file = tmp_path / "eval.json"
-    eval_file.write_text(json.dumps([
-        {"agent": "dh-design", "query": "unrelated", "should_trigger": True},
+    (agents_dir / "dh-design.eval_queries.json").write_text(json.dumps([
+        {"query": "unrelated", "should_trigger": True},
     ]), encoding="utf-8")
 
-    assert main(["route-score", "--agents-dir", str(agents_dir), "--eval-file", str(eval_file)]) == 1
-    assert main(["route-score", "--agents-dir", str(tmp_path / "missing"), "--eval-file", str(eval_file)]) == 2
+    assert main(["route-score"], content_dir=content_dir) == 1
+    assert main(["route-score", "--agents-dir", str(tmp_path / "missing")], content_dir=content_dir) == 2
+
+
+def test_load_agent_assertions_infers_owner_from_paired_filename(tmp_path):
+    agents_dir = tmp_path / "agents"
+    agents_dir.mkdir()
+    (agents_dir / "dh-design.agent.md").write_text("design", encoding="utf-8")
+    (agents_dir / "dh-design.eval_queries.json").write_text(json.dumps([
+        {"query": "design API", "should_trigger": True},
+        {"query": "test coverage", "should_trigger": False},
+    ]), encoding="utf-8")
+
+    assert load_agent_assertions(agents_dir) == [
+        ("dh-design", "design API", True),
+        ("dh-design", "test coverage", False),
+    ]

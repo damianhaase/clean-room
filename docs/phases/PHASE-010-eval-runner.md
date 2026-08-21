@@ -27,5 +27,5 @@ Implement offline routing evaluation over injected assertions and agent descript
 
 ## Notes / open questions
 
-- Assertions are injected as `(owner, query, should_trigger)` tuples for deterministic unit tests; optional JSON loading is limited to the local runner helper.
-- The CLI accepts `--agents-dir` and `--eval-file` so CI and tests can point at a source catalog without network or bundle discovery.
+- Assertions are injected as `(owner, query, should_trigger)` tuples for deterministic unit tests; production discovery flattens paired `<agent>.eval_queries.json` files and infers ownership from filenames.
+- The CLI auto-discovers `content/agents` by default; `--agents-dir` is an optional override for CI and tests.

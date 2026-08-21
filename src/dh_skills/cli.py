@@ -13,8 +13,8 @@ from .lifecycle import clean_content, uninstall_content, update_check, update_co
 from .eval_runner import (
     ROUTE_SCORE_THRESHOLD,
     evaluate,
+    load_agent_assertions,
     load_agent_documents,
-    load_assertions,
     route_score,
     threshold_passes,
 )
@@ -66,8 +66,7 @@ def main(
         if command == "clean":
             command_parser.add_argument("--dry-run", action="store_true")
         if command in {"eval", "route-score"}:
-            command_parser.add_argument("--agents-dir", required=True)
-            command_parser.add_argument("--eval-file", required=True)
+            command_parser.add_argument("--agents-dir")
     options = parser.parse_args(arguments)
     if options.command not in {"list", "status", "install", "update", "uninstall", "clean", "eval", "route-score"}:
         print(f"{CLI_NAME}: no command specified", file=sys.stderr)
@@ -76,9 +75,10 @@ def main(
     source = Path("content") if content_dir is None else Path(content_dir)
     resolved_targets = Targets(Path(), Path(), Path()) if targets is None else targets
     if options.command in {"eval", "route-score"}:
+        agents_dir = Path(options.agents_dir) if options.agents_dir else source / "agents"
         try:
-            documents = load_agent_documents(Path(options.agents_dir))
-            assertions = load_assertions(Path(options.eval_file))
+            documents = load_agent_documents(agents_dir)
+            assertions = load_agent_assertions(agents_dir)
         except (OSError, ValueError, json.JSONDecodeError):
             return 2
         report = evaluate(documents, assertions)
