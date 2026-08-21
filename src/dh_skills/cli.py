@@ -1,5 +1,6 @@
 """Command-line entry point for the dh-skills package manager."""
 
+import json
 import sys
 import argparse
 from collections.abc import Sequence
@@ -9,6 +10,14 @@ from . import __version__
 from .catalog import list_content, status_content
 from .installer import install_content
 from .lifecycle import clean_content, uninstall_content, update_check, update_content
+from .eval_runner import (
+    ROUTE_SCORE_THRESHOLD,
+    evaluate,
+    load_agent_assertions,
+    load_agent_documents,
+    route_score,
+    threshold_passes,
+)
 from .paths import Targets
 
 CLI_NAME = "dh-skills"
@@ -30,7 +39,7 @@ def main(
 
     parser = argparse.ArgumentParser(prog=CLI_NAME)
     subparsers = parser.add_subparsers(dest="command")
-    for command in ("list", "status", "install", "update", "uninstall", "clean"):
+    for command in ("list", "status", "install", "update", "uninstall", "clean", "eval", "route-score"):
         command_parser = subparsers.add_parser(command)
         command_parser.add_argument("--dev", action="store_true")
         if command == "list":
@@ -56,13 +65,30 @@ def main(
             command_parser.add_argument("--dry-run", action="store_true")
         if command == "clean":
             command_parser.add_argument("--dry-run", action="store_true")
+        if command in {"eval", "route-score"}:
+            command_parser.add_argument("--agents-dir")
     options = parser.parse_args(arguments)
-    if options.command not in {"list", "status", "install", "update", "uninstall", "clean"}:
+    if options.command not in {"list", "status", "install", "update", "uninstall", "clean", "eval", "route-score"}:
         print(f"{CLI_NAME}: no command specified", file=sys.stderr)
         return 2
 
     source = Path("content") if content_dir is None else Path(content_dir)
     resolved_targets = Targets(Path(), Path(), Path()) if targets is None else targets
+    if options.command in {"eval", "route-score"}:
+        agents_dir = Path(options.agents_dir) if options.agents_dir else source / "agents"
+        try:
+            documents = load_agent_documents(agents_dir)
+            assertions = load_agent_assertions(agents_dir)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return 2
+        report = evaluate(documents, assertions)
+        if options.command == "eval":
+            print(report.text)
+            return 0 if report.matched == report.total else 1
+        value = route_score(documents, assertions)
+        state = "PASS" if threshold_passes(value) else "FAIL"
+        print(f"[{state}] routing accuracy {value:.3f} (threshold >= {ROUTE_SCORE_THRESHOLD:.2f})")
+        return 0 if threshold_passes(value) else 1
     if options.command == "update":
         if options.check:
             return update_check(resolved_targets, remote_commit=options.remote_commit or remote_commit)
