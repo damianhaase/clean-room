@@ -49,7 +49,7 @@ jobs:
   # phase 010/013/skills-validation exist, flipping `if:` to true turns on a real gate.
   route-score:
     runs-on: ubuntu-latest
-    if: true  # flip on after PHASE-010 (router + eval runner) lands
+    if: false  # flip on after PHASE-010 (router + eval runner) lands
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -59,7 +59,7 @@ jobs:
 
   eval:
     runs-on: ubuntu-latest
-    if: true  # flip on after PHASE-010 lands
+    if: false  # flip on after PHASE-010 lands
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
